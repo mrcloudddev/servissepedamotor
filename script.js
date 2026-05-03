@@ -1,5 +1,5 @@
 // GANTI URL CSV GOOGLE SHEETS ANDA DI BAWAH INI
-const csvUrl = 'https://script.google.com/macros/s/AKfycbwNJVptGMG7jSh3svBbemED_FBERy8s0xj0Z0fKuBG8Wzdy8HK2VoaC-OYHXmb_7EfY/exec';
+const csvUrl = 'https://script.google.com/macros/s/AKfycbwl1MWCsUdHLGYUCWRxRGU5sMEzp6LvJGN07Nijrzygk00FVmgrRzDukKqvvevYptgl/exec';
 
 async function loadData() {
     try {
