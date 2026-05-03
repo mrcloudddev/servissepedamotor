@@ -1,5 +1,5 @@
 // 1. PASTIKAN URL INI ADALAH URL "PUBLISH TO WEB" DENGAN FORMAT .CSV
-const csvUrl = 'https://docs.google.com/spreadsheets/d/1WMi5nGIrXOKN9inurEA79NLvYWUGXQFK3KjLg_80f2w/pub?output=csv';
+const csvUrl = 'https://script.google.com/macros/s/AKfycbwl1MWCsUdHLGYUCWRxRGU5sMEzp6LvJGN07Nijrzygk00FVmgrRzDukKqvvevYptgl/exec';
 
 async function loadData() {
     try {
