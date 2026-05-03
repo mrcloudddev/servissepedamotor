@@ -1,47 +1,56 @@
-// 1. PASTIKAN URL INI ADALAH URL "PUBLISH TO WEB" DENGAN FORMAT .CSV
-const csvUrl = 'https://script.google.com/macros/s/AKfycbwl1MWCsUdHLGYUCWRxRGU5sMEzp6LvJGN07Nijrzygk00FVmgrRzDukKqvvevYptgl/exec';
+// GANTI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT
+const webAppUrl = 'https://script.google.com/macros/s/AKfycbwI4gD3NlQ06VYCoWGLDb-7Dru-soR2H_Qus3tPr82gVwNenBXBlglA4cVw1BMGbUmq/exec';
 
+// FUNGSI MEMBACA DATA (READ)
 async function loadData() {
     try {
-        const response = await fetch(csvUrl);
-        
-        // Cek jika respon gagal
-        if (!response.ok) throw new Error('Gagal mengambil data');
-        
-        const csvData = await response.text();
-        const rows = csvData.split('\n');
+        const response = await fetch(webAppUrl);
+        const data = await response.json(); // Data sekarang berformat JSON (Array)
         
         const tbody = document.getElementById('dataBody');
         tbody.innerHTML = '';
 
-        // Mulai dari baris 1 (lewati header)
-        for (let i = 1; i < rows.length; i++) {
-            // Menggunakan regex agar pembacaan koma di dalam teks (jika ada) tidak error
-            const cols = rows[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-            
-            if (cols.length >= 4 && cols[1].trim() !== "") {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${cols[0] || '-'}</td>
-                    <td>${cols[1] || '-'}</td>
-                    <td>${cols[2] || '-'}</td>
-                    <td>${cols[3] || '-'}</td>
-                    <td>${cols[4] || 'Proses'}</td>
-                    <td><strong>Rp ${Number(cols[5] || 0).toLocaleString('id-ID')}</strong></td>
-                `;
-                tbody.appendChild(tr);
-            }
-        }
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            // row[0] = Tanggal, row[1] = Nama, dst sesuai urutan di Sheet
+            tr.innerHTML = `
+                <td>${new Date(row[0]).toLocaleDateString('id-ID')}</td>
+                <td>${row[1]}</td>
+                <td>${row[2]}</td>
+                <td>${row[3]}</td>
+                <td><span class="status">${row[4]}</span></td>
+                <td><strong>Rp ${Number(row[5]).toLocaleString('id-ID')}</strong></td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-        // Sembunyikan loading dan tampilkan tabel
         document.getElementById('loading').style.display = 'none';
         document.getElementById('tableServis').style.display = 'table';
-        
     } catch (e) {
-        document.getElementById('loading').innerHTML = '❌ Gagal memuat data. Pastikan URL CSV benar dan sudah di-Publish to Web.';
-        console.error("Detail Error:", e);
+        document.getElementById('loading').innerHTML = '❌ Gagal memuat data dari Apps Script.';
+        console.error(e);
     }
 }
 
-// Jalankan fungsi saat halaman dibuka
+// FUNGSI MENYIMPAN DATA (CREATE)
+document.getElementById('btnSimpan').addEventListener('click', async () => {
+    const params = {
+        nama: document.getElementById('nama').value,
+        motor: document.getElementById('motor').value,
+        keluhan: document.getElementById('keluhan').value,
+        biaya: document.getElementById('biaya').value
+    };
+
+    if(!params.nama || !params.motor) return alert("Isi data dengan lengkap!");
+
+    try {
+        // Mengirim data dengan metode POST ke Apps Script
+        await fetch(webAppUrl + "?" + new URLSearchParams(params), { method: 'POST' });
+        alert('Data Berhasil Disimpan!');
+        location.reload(); 
+    } catch (e) {
+        alert('Gagal menyimpan data.');
+    }
+});
+
 loadData();
