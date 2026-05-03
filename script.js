@@ -1,5 +1,5 @@
 // GANTI URL CSV GOOGLE SHEETS ANDA DI BAWAH INI
-const csvUrl = 'URL_PUBLISH_CSV_ANDA_DISINI';
+const csvUrl = 'https://script.google.com/macros/s/AKfycbwNJVptGMG7jSh3svBbemED_FBERy8s0xj0Z0fKuBG8Wzdy8HK2VoaC-OYHXmb_7EfY/exec';
 
 async function loadData() {
     try {
