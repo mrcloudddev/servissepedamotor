@@ -1,45 +1,25 @@
-// GANTI URL CSV GOOGLE SHEETS ANDA DI BAWAH INI
-const csvUrl = 'https://script.google.com/macros/s/AKfycbwl1MWCsUdHLGYUCWRxRGU5sMEzp6LvJGN07Nijrzygk00FVmgrRzDukKqvvevYptgl/exec';
+// Ganti dengan URL Web App dari langkah di atas
+const webAppUrl = 'https://script.google.com/macros/s/AKfycbwl1MWCsUdHLGYUCWRxRGU5sMEzp6LvJGN07Nijrzygk00FVmgrRzDukKqvvevYptgl/exec';
 
-async function loadData() {
+document.getElementById('btnSimpan').addEventListener('click', async () => {
+    const data = {
+        nama: document.getElementById('nama').value,
+        motor: document.getElementById('motor').value,
+        keluhan: document.getElementById('keluhan').value,
+        biaya: document.getElementById('biaya').value
+    };
+
+    // Validasi sederhana
+    if(!data.nama || !data.motor) return alert("Mohon isi minimal Nama dan Motor");
+
     try {
-        const response = await fetch(csvUrl);
-        const csvData = await response.text();
-        const rows = csvData.split('\n').slice(1);
-        
-        const tbody = document.getElementById('dataBody');
-        tbody.innerHTML = '';
-
-        rows.forEach(row => {
-            const cols = row.split(',');
-            if (cols.length >= 5) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${cols[0] || '-'}</td>
-                    <td>${cols[1] || '-'}</td>
-                    <td>${cols[2] || '-'}</td>
-                    <td>${cols[3] || '-'}</td>
-                    <td>${cols[4] || '-'}</td>
-                    <td><strong>Rp ${Number(cols[5] || 0).toLocaleString('id-ID')}</strong></td>
-                `;
-                tbody.appendChild(tr);
-            }
+        const response = await fetch(webAppUrl + "?" + new URLSearchParams(data), {
+            method: 'POST'
         });
-
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('tableServis').style.display = 'table';
-    } catch (e) {
-        document.getElementById('loading').innerHTML = 'Gagal memuat data. Periksa URL CSV Anda.';
-        console.error(e);
+        alert('Data berhasil disimpan ke Spreadsheet!');
+        location.reload(); // Refresh untuk melihat data baru
+    } catch (error) {
+        console.error(error);
+        alert('Gagal menyimpan data.');
     }
-}
-
-document.getElementById('btnSimpan').addEventListener('click', () => {
-    alert('Fitur simpan memerlukan integrasi Web App URL dari Google Apps Script.');
 });
-
-if(csvUrl !== 'URL_PUBLISH_CSV_ANDA_DISINI') {
-    loadData();
-} else {
-    document.getElementById('loading').innerHTML = 'Silakan isi URL CSV di script.js';
-}
